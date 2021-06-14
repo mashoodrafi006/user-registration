@@ -20,4 +20,3 @@ It's an restaurant panel API's project.
 ## Testing
 
 -   Use JEST for testing
--   Use AAA pattern for writing your tests
