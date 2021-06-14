@@ -1,10 +1,12 @@
-const app = require('./expressApp');
-import { ApolloServer, gql } from 'apollo-server-express';
+import config from '../config/config';
+import { ApolloServer } from 'apollo-server-express';
 import { typeDefs } from '../graphql/typeDefs';
 import { resolvers } from '../graphql/resolvers';
 
-require('./routes');
+const app = require('./expressApp');
+
 const server = require('http').Server(app);
+require('./routes');
 
 try {
     const gqlServer = new ApolloServer({ typeDefs, resolvers });
@@ -13,8 +15,8 @@ try {
     console.log(error);
 }
 
-app.listen({ port: 5000 }, () => {
-    console.log(`Apollo server at http://localhost:5000/graphql`);
+app.listen({ port: config.gqlPort }, () => {
+    console.log(`Apollo server at http://localhost:${config.gqlPort}/graphql`);
 });
 
 module.exports = server;

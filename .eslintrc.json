@@ -39,6 +39,7 @@
         "no-multi-assign": ["off"],
         "prefer-const": ["off"],
         "import/prefer-default-export": ["off"],
-        "no-shadow": ["off"]
+        "no-shadow": ["off"],
+        "import/order": ["off"]
     }
 }
