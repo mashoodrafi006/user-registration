@@ -36,6 +36,9 @@
         "no-nested-ternary": ["off"],
         "no-param-reassign": ["off"],
         "consistent-return": ["off"],
-        "no-multi-assign": ["off"]
+        "no-multi-assign": ["off"],
+        "prefer-const": ["off"],
+        "import/prefer-default-export": ["off"],
+        "no-shadow": ["off"]
     }
 }

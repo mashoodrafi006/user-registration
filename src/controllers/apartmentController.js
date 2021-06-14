@@ -1,6 +1,7 @@
 import { codeCrashResponse } from '../utils/utils';
-import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
 import apartmentService from '../app/services/apartmentService';
+import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
+
 const apartmentController = {};
 
 apartmentController.create = async (req, res) => {

@@ -17,7 +17,7 @@ apartmentRepository.create = async (apartment) => {
 };
 
 /**
- * @param filters (includes city, country, rooms)
+ * @param filters (includes city, country, rooms, offset, limit)
  * @description Search apartment.
  */
 apartmentRepository.search = async (filters) => {
@@ -25,8 +25,10 @@ apartmentRepository.search = async (filters) => {
         const { city, country, rooms, location, offset, limit } = filters;
         let query = {};
         /*
-            $regex to ensure case insensitive query for string filters
+            $regex to ensure case insensitive query for string filters.
+            Search filters on apartments can work individually and with a combination of filters too.
         */
+
         if (city) {
             query.city = { $regex: new RegExp(city, 'i') };
         }
@@ -55,7 +57,6 @@ apartmentRepository.search = async (filters) => {
 
         return apartmentsFound;
     } catch (error) {
-        console.log(error);
         throw error;
     }
 };

@@ -16,7 +16,7 @@ export default class UserValidator {
         try {
             const { userName, password, email } = req.body;
 
-            /* 
+            /*
                 Validates that userName, password, email are of type string
                 Validates that email type is correct.
             */
@@ -64,7 +64,7 @@ export default class UserValidator {
         try {
             const { apartmentId } = req.body;
 
-            if (!req.headers['authorization']) {
+            if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
             const bearer = UserValidator.fetchAccessToken(req);
@@ -97,7 +97,7 @@ export default class UserValidator {
         try {
             const { apartmentId, isFavorite } = req.body;
 
-            if (!req.headers['authorization']) {
+            if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
             const bearer = UserValidator.fetchAccessToken(req);
@@ -127,7 +127,7 @@ export default class UserValidator {
      */
     static markUserFavoriteApartmentValidator(req, res, next) {
         try {
-            if (!req.headers['authorization']) {
+            if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
             const bearer = UserValidator.fetchAccessToken(req);
@@ -149,11 +149,10 @@ export default class UserValidator {
      */
     static fetchAccessToken(req) {
         try {
-            const jwt = req.headers['authorization'];
+            const jwt = req.headers.authorization;
             const bearer = jwt.split(' ');
             return bearer[1];
         } catch (error) {
-            console.log(erorr);
             throw error;
         }
     }
@@ -166,14 +165,15 @@ export default class UserValidator {
         try {
             let JWTdata;
             try {
+                /* Verify the JWT provided in the request. */
                 const user = jwt.verify(bearer, JWT_TOKEN);
                 JWTdata = user;
             } catch (error) {
                 JWTdata = error.message;
             }
+            /* Validate that id provided by JWT resolution is valid mongo id. */
             return typeof JWTdata === 'object' && mongoose.Types.ObjectId.isValid(JWTdata.id) ? { isValidTokan: true, data: JWTdata } : { isValidTokan: false, data: JWTdata };
         } catch (error) {
-            console.log(error);
             throw error;
         }
     }

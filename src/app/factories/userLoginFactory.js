@@ -21,7 +21,9 @@ export default class UserLoginFactory {
         const { userName, password, userFound } = credentials;
         let userObject = { id: '', userName: '', token: '' };
         let token = '';
+        /* Validate password provided in request with bcrypt */
         if (userFound && (await bcrypt.compare(password, userFound.password))) {
+            /* Generate JWT token for user */
             token = jwt.sign({ id: userFound._id, userName }, JWT_TOKEN, { expiresIn: 10000 });
             userObject = new UserLoginFactory(userName, token, userFound);
         }

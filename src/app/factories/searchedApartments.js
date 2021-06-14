@@ -16,7 +16,7 @@ export default class SearchedApartmentsFactory {
 
     /**
      * @param apartments
-     * @description Prepare response for searches apartments.
+     * @description Prepare response for searched apartments.
      */
     static async prepareResponse(apartments) {
         try {

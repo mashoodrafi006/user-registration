@@ -16,11 +16,13 @@ export default class UserCreateFactory {
         try {
             let token = '';
             const { userName } = user;
+            /* Validate if user found. */
             if (user) {
+                /* Generate JWT token for user */
                 token = jwt.sign({ id: user._id, userName: user.userName }, JWT_TOKEN, { expiresIn: 10000 });
             }
-
             const userObject = new UserCreateFactory(user, userName, token);
+
             return userObject;
         } catch (error) {
             throw error;

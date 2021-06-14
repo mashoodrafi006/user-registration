@@ -8,14 +8,6 @@ export const API_STATUS_CODES = {
 };
 export const RESPONSE_MESSAGES = {
     SUCCESS: 'Sucess',
-    BEFORE_CUTOFF: 'You cannot accept orders before cutoff.',
-    KITCHEN_FOUND: 'Fetched kitchen details.',
-    KITCHEN_NOT_FOUND: 'Kitchen not found.',
-    FETCHED_STATS: 'Fetched kitchen stats.',
-    ORDERS_FOUND: 'Orders fetched.',
-    ORDERS_NOT_FOUND: 'Orders not found.',
-    DRIVERS_FOUND: 'Fetched drivers.',
-    DRIVERS_NOT_FOUND: 'No drivers found.',
     AUTHORIZATION_FAILED: 'Authorization failed',
     DUPLICATE_ENTRY: 'Try other username or email.',
 };

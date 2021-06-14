@@ -1,5 +1,5 @@
-import users from '../../models/mongoModels/users';
 import mongoose from 'mongoose';
+import users from '../../models/mongoModels/users';
 
 const userRepository = {};
 
@@ -58,9 +58,10 @@ userRepository.saveUserApartment = async (apartmentDetail) => {
         const apartment = apartmentDetail[1];
 
         if (user && apartment) {
+            /* Save user  with his new apartment if both user and apartments are validated. */
             apartment.isFavorite = false;
             let response = await users.updateOne({ _id: user._id }, { $addToSet: { apartments: apartment } });
-            apartmentSaved = response.nModified ? true : false;
+            apartmentSaved = !!response.nModified;
         }
         return apartmentSaved;
     } catch (error) {
@@ -75,8 +76,9 @@ userRepository.saveUserApartment = async (apartmentDetail) => {
 userRepository.markUserApartmentFavorite = async (apartmentDetail) => {
     try {
         const { userId, apartmentId, isFavorite } = apartmentDetail;
+        /* Validate if _id of user and _id of apartment is a valid mongoose id. */
         const response = await users.updateOne({ _id: mongoose.Types.ObjectId(userId), 'apartments._id': mongoose.Types.ObjectId(apartmentId) }, { $set: { 'apartments.$.isFavorite': isFavorite } });
-        return { isApartmentMarkedFavorite: response.nModified ? true : false };
+        return { isApartmentMarkedFavorite: !!response.nModified };
     } catch (error) {
         throw error;
     }
@@ -89,7 +91,9 @@ userRepository.markUserApartmentFavorite = async (apartmentDetail) => {
 userRepository.findUserFavoriteApartments = async (userId) => {
     try {
         let response = [];
+        /* Validate if _id of user is a valid mongoose id. */
         if (mongoose.Types.ObjectId.isValid(userId)) {
+            /* Fetch apartments of users with attribute isFavorite set as true. */
             response = await users.aggregate([{ $match: { _id: mongoose.Types.ObjectId(userId), 'apartments.isFavorite': true } }, { $unwind: '$apartments' }, { $match: { 'apartments.isFavorite': true } }, { $group: { _id: '$_id', apartments: { $push: '$apartments' } } }]);
         }
         return response[0];

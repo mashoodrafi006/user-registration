@@ -1,8 +1,8 @@
-import isValidCoordinates from 'is-valid-coordinates';
 import validator from 'validator';
+import isValidCoordinates from 'is-valid-coordinates';
 import { CONTROLLER_ERROR, INVALID_REQUEST, AUTHORIZATION_FAILED } from '../../constants/errors';
 
-import userValidator from '../validators/userValidator';
+import userValidator from './userValidator';
 
 export default class ApartmentValidator {
     /**
@@ -14,7 +14,8 @@ export default class ApartmentValidator {
         try {
             const { name, city, country, rooms, location } = req.body;
 
-            if (!req.headers['authorization']) {
+            /* Check for authorization in headers */
+            if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
             const bearer = userValidator.fetchAccessToken(req);
@@ -23,7 +24,7 @@ export default class ApartmentValidator {
                 return res.json(AUTHORIZATION_FAILED);
             }
 
-            /* 
+            /*
                 Validates that name, city, country are of type string and rooms of type number
                 Validates that location type is a Point and the coordinates has valid coordinates.
             */
@@ -54,7 +55,8 @@ export default class ApartmentValidator {
                 req.query.country = country = validator.escape(country);
             }
 
-            if (!req.headers['authorization']) {
+            /* Check for authorization in headers */
+            if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
             const bearer = userValidator.fetchAccessToken(req);
@@ -63,24 +65,22 @@ export default class ApartmentValidator {
                 return res.json(AUTHORIZATION_FAILED);
             }
 
-            /*
-                Validates that location is valid
-            */
+            /*  Validates that location has valid longitudes and latitudes. */
             const { location } = req.body;
             if (location && isValidCoordinates(location.coordinates[0], location.coordinates[1]) && typeof location.minDistance === 'number' && location.minDistance >= 0 && typeof location.maxDistance === 'number' && location.maxDistance && location.maxDistance >= location.minDistance) {
                 isValidLocation = true;
             }
 
             /*
-                Sets default pagination
-                For now I've used skip, limit for pagination but this greatly effects performance for large number of documents to its better to use last cursor for better performance.
+                Sets default pagination to limit 10 and offset 0.
             */
             if (!(typeof offset === 'number' && offset >= 0 && typeof limit === 'number' && limit >= 1)) {
                 req.query.offset = 0;
                 req.query.limit = 10;
             }
-            /* 
-                Validates that city, country and rooms are of correct types and either of them is present as a filter
+            /*
+                Validates that city, country and rooms are of correct types and either of them is present as a filter.
+                A filter alone can be applied and also with group of filters together.
             */
             if ((city && typeof city === 'string') || (country && typeof country === 'string') || (rooms && typeof rooms === 'number') || isValidLocation) {
                 if (location && isValidLocation) {

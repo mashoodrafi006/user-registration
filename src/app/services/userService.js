@@ -1,7 +1,7 @@
 import userRepository from '../repositories/userRepository';
-import userCreateFactory from '../factories/userCreateFactory';
 import userLoginFactory from '../factories/userLoginFactory';
-import apartmentService from '../services/apartmentService';
+import apartmentService from './apartmentService';
+import userCreateFactory from '../factories/userCreateFactory';
 import userFavoriteApartmentFactory from '../factories/userFavoriteApartments';
 
 const userService = {};
@@ -44,7 +44,7 @@ userService.saveUserApartment = async (userApartmentDetails) => {
 userService.findUserAndApartment = async (userApartmentDetails) => {
     try {
         const promises = [];
-        const { userId, apartmentId, isFavorite } = userApartmentDetails;
+        const { userId, apartmentId } = userApartmentDetails;
         const userPromise = new Promise((resolve) => {
             const user = userRepository.findById(userId);
             resolve(user);
