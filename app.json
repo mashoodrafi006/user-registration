@@ -1,0 +1,10 @@
+{
+    "apps": [
+        {
+            "name": "home-like",
+            "script": "./dist/index.js",
+            "instances": 1,
+            "log_date_format": "YYYY-MM-DD hh:mm:ss A"
+        }
+    ]
+}
