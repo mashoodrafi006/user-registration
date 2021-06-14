@@ -3,10 +3,10 @@
 ## Get Started
 
 1. **Install [Node]**
-2. **Clone this repository.** - `git clone git@bitbucket.org:mashoodrafi006/homeLike.git`
+2. **Clone this repository.** - `git clone https://github.com/mashoodrafi006/homeLike.git`
 3. **Install Node Packages.** - `npm install`
 4. **Run command on terminal** - `cp .env.example .env`
-5. **Run the app.** - `npm start`
+5. **Run the app.** - `npm run dev`
 
 ### Project Details
 
