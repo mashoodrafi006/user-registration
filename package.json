@@ -78,7 +78,7 @@
     "husky": {
         "hooks": {
             "pre-commit": "lint-staged",
-            "pre-push": "branch-naming-check '^((feature|bug|hotfix|release)/.+|$-d+|(dev|stage|production))'"
+            "pre-push": "branch-naming-check '^((feature|bug|hotfix|release)/.+|$-d+|(dev|stage|production|master))'"
         }
     },
     "lint-staged": {
