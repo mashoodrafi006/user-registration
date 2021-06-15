@@ -7,3 +7,5 @@ dist
 .DS_Store
 newrelic_agent.log
 .eslintcache
+combined.log
+error.log

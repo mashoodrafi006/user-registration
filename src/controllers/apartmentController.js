@@ -1,3 +1,4 @@
+import logger from '../utils/logger';
 import { codeCrashResponse } from '../utils/utils';
 import apartmentService from '../app/services/apartmentService';
 import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
@@ -12,6 +13,10 @@ apartmentController.create = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -25,6 +30,10 @@ apartmentController.search = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -37,6 +46,10 @@ apartmentController.prepareResponseBack = (entities) => {
         response.body = entities;
         return response;
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         throw error;
     }
 };

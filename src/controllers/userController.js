@@ -1,3 +1,4 @@
+import logger from '../utils/logger';
 import { codeCrashResponse } from '../utils/utils';
 import userService from '../app/services/userService';
 import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
@@ -27,9 +28,13 @@ userController.login = async (req, res) => {
         response.status = userLoginToken.token ? API_STATUS_CODES.SUCCESS : API_STATUS_CODES.AUTHORIZATION_FAILED;
         response.message = userLoginToken.token ? RESPONSE_MESSAGES.SUCCESS : RESPONSE_MESSAGES.AUTHORIZATION_FAILED;
         response.body = userLoginToken;
+
         return res.json(response);
     } catch (error) {
-        console.log(error);
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -42,6 +47,10 @@ userController.saveUserApartment = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -54,6 +63,10 @@ userController.markApartmentFavorite = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -66,6 +79,10 @@ userController.findUserFavoriteApartments = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         return codeCrashResponse(res, error);
     }
 };
@@ -78,6 +95,10 @@ userController.prepareResponseBack = (entities) => {
         response.body = entities;
         return response;
     } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
         throw error;
     }
 };
