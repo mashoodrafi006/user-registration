@@ -12,25 +12,24 @@ userController.register = async (req, res) => {
 
         return res.json(response);
     } catch (error) {
-        if (error.code == API_STATUS_CODES.DUPLICATE_ENTRY) {
+        if (error.code === API_STATUS_CODES.DUPLICATE_ENTRY) {
             return res.json({ status: API_STATUS_CODES.ERROR_CODE, message: RESPONSE_MESSAGES.DUPLICATE_ENTRY });
-        } else {
-            return codeCrashResponse(res, error);
         }
+        return codeCrashResponse(res, error);
     }
 };
 
 userController.login = async (req, res) => {
     try {
         const { userName, password } = req.body;
-        const userLoginToken = await userService.findUserFromUserName({ userName, password });
         let response = {};
+        const userLoginToken = await userService.loginUser({ userName, password });
         response.status = userLoginToken.token ? API_STATUS_CODES.SUCCESS : API_STATUS_CODES.AUTHORIZATION_FAILED;
         response.message = userLoginToken.token ? RESPONSE_MESSAGES.SUCCESS : RESPONSE_MESSAGES.AUTHORIZATION_FAILED;
         response.body = userLoginToken;
-
         return res.json(response);
     } catch (error) {
+        console.log(error);
         return codeCrashResponse(res, error);
     }
 };

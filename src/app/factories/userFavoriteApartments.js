@@ -32,7 +32,6 @@ export default class UserFavoriteApartmentsFactory {
             const response = new UserFavoriteApartmentsFactory(userFavoriteApartments);
             return response;
         } catch (error) {
-            console.log(error);
             throw error;
         }
     }

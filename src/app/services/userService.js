@@ -16,7 +16,7 @@ userService.create = async (credentials) => {
     }
 };
 
-userService.findUserFromUserName = async (credentials) => {
+userService.loginUser = async (credentials) => {
     try {
         const { userName, password } = credentials;
         const userFound = await userRepository.findUserFromUserName(userName);

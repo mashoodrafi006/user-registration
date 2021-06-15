@@ -14,9 +14,7 @@ export const resolvers = {
         },
         searchApartments: async (_, { city, country, rooms, latitude, longitude, minDistance, maxDistance, offset, limit }) => {
             try {
-                // console.log({ city, country, rooms, location: { coordinates: latitude, longitude, minDistance, maxDistance }, offset, limit });
                 const apartments = await apartmentService.search({ city, country, rooms, location: { coordinates: [latitude, longitude], minDistance, maxDistance }, offset, limit });
-                console.log(apartments.apartmentsFound);
                 return apartments.apartmentsFound;
             } catch (error) {
                 console.log(error);

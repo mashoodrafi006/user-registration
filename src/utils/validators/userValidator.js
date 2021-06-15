@@ -138,7 +138,6 @@ export default class UserValidator {
             req.body.userId = JWTUser.data.id;
             next();
         } catch (error) {
-            console.log(error);
             res.json(CONTROLLER_ERROR);
         }
     }
