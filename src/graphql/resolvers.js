@@ -5,7 +5,7 @@ import userService from '../app/services/userService';
 export const resolvers = {
     Query: {
         login: async (_, { userName, password }) => {
-            const user = await userService.findUserFromUserName({ userName, password });
+            const user = await userService.loginUser({ userName, password });
             return user;
         },
         findUserFavoriteApartments: async (_, userId) => {
