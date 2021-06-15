@@ -48,6 +48,8 @@ apartmentRepository.search = async (filters) => {
             };
         }
 
+        /* Lean method is used for faster queries and keeps the operation less memory intensive */
+
         const apartmentsFound = await apartments
             .find(query)
             .select('_id name city country rooms location')
@@ -67,6 +69,7 @@ apartmentRepository.search = async (filters) => {
  */
 apartmentRepository.findById = async (apartmentId) => {
     try {
+        /* Lean method is used for faster queries and keeps the operation less memory intensive */
         const apartment = await apartments.findById(apartmentId).lean();
         return apartment;
     } catch (error) {

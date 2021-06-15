@@ -1,3 +1,5 @@
+import logger from '../../utils/logger';
+
 export default class UserFavoriteApartmentsFactory {
     constructor(userFavoriteApartments) {
         try {
@@ -14,7 +16,10 @@ export default class UserFavoriteApartmentsFactory {
                         };
                         this.favoriteApartments.push(apartment);
                     } catch (error) {
-                        console.log(error);
+                        logger.log({
+                            level: 'error',
+                            message: error.message,
+                        });
                     }
                 });
             }

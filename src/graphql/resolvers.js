@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import logger from '../utils/logger';
 import apartmentService from '../app/services/apartmentService';
 import userService from '../app/services/userService';
 
@@ -17,7 +18,10 @@ export const resolvers = {
                 const apartments = await apartmentService.search({ city, country, rooms, location: { coordinates: [latitude, longitude], minDistance, maxDistance }, offset, limit });
                 return apartments.apartmentsFound;
             } catch (error) {
-                console.log(error);
+                logger.log({
+                    level: 'error',
+                    message: error.message,
+                });
             }
         },
     },
@@ -36,7 +40,10 @@ export const resolvers = {
                 const apartmentCreated = await apartmentService.create({ name, city, country, rooms, location: { type: 'Point', coordinates: [latitude, longitude] } });
                 return apartmentCreated;
             } catch (error) {
-                console.log(error);
+                logger.log({
+                    level: 'error',
+                    message: error.message,
+                });
             }
         },
         saveUserApartment: async (_, { userId, apartmentId }) => {
@@ -45,7 +52,10 @@ export const resolvers = {
 
                 return isApartmentSaved;
             } catch (error) {
-                console.log(error);
+                logger.log({
+                    level: 'error',
+                    message: error.message,
+                });
             }
         },
         markUserFavoriteApartment: async (_, { userId, apartmentId, isFavorite }) => {
@@ -53,7 +63,10 @@ export const resolvers = {
                 const isApartmentSaved = await userService.markUserApartmentFavorite({ userId, apartmentId, isFavorite });
                 return { isApartmentSaved: isApartmentSaved.isApartmentMarkedFavorite };
             } catch (error) {
-                console.log(error);
+                logger.log({
+                    level: 'error',
+                    message: error.message,
+                });
             }
         },
     },

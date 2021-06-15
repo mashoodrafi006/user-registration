@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import logger from '../utils/logger';
 
 import config from '../config/config';
 
@@ -16,8 +17,17 @@ const mongoConnection = () => {
 
         mongoose.connection.on('error', () => {
             console.log('MongoDB connection error. Please make sure MongoDB is running.');
+            logger.log({
+                level: 'error',
+                message: error.message,
+            });
         });
-    } catch (err) {}
+    } catch (error) {
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
+    }
 };
 
 export default mongoConnection;

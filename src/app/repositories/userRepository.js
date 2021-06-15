@@ -23,6 +23,7 @@ userRepository.create = async (credentials) => {
  */
 userRepository.findUserFromUserName = async (userName) => {
     try {
+        /* Lean method is used for faster queries and keeps the operation less memory intensive */
         const userPassword = await users
             .findOne({ userName })
             .select('_id userName password')
@@ -39,6 +40,7 @@ userRepository.findUserFromUserName = async (userName) => {
  */
 userRepository.findById = async (userId) => {
     try {
+        /* Lean method is used for faster queries and keeps the operation less memory intensive */
         let user = await users.findById(userId).lean();
 
         return user;

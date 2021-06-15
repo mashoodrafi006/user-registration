@@ -13,6 +13,10 @@ try {
     gqlServer.applyMiddleware({ app });
 } catch (error) {
     console.log(error);
+    logger.log({
+        level: 'error',
+        message: error.message,
+    });
 }
 
 app.listen({ port: config.gqlPort }, () => {
