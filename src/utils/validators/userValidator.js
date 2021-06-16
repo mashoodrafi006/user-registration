@@ -64,6 +64,7 @@ export default class UserValidator {
         try {
             const { apartmentId } = req.body;
 
+            /* Check for authorization in headers */
             if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
@@ -97,6 +98,7 @@ export default class UserValidator {
         try {
             const { apartmentId, isFavorite } = req.body;
 
+            /* Check for authorization in headers */
             if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }
@@ -127,6 +129,7 @@ export default class UserValidator {
      */
     static markUserFavoriteApartmentValidator(req, res, next) {
         try {
+            /* Check for authorization in headers */
             if (!req.headers.authorization) {
                 return res.json(AUTHORIZATION_FAILED);
             }

@@ -44,6 +44,7 @@ userService.saveUserApartment = async (userApartmentDetails) => {
 userService.findUserAndApartment = async (userApartmentDetails) => {
     try {
         const promises = [];
+        /* Both requests are sent asynchronously to improve performance */
         const { userId, apartmentId } = userApartmentDetails;
         const userPromise = new Promise((resolve) => {
             const user = userRepository.findById(userId);

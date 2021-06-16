@@ -78,7 +78,6 @@ userRepository.saveUserApartment = async (apartmentDetail) => {
 userRepository.markUserApartmentFavorite = async (apartmentDetail) => {
     try {
         const { userId, apartmentId, isFavorite } = apartmentDetail;
-        /* Validate if _id of user and _id of apartment is a valid mongoose id. */
         const response = await users.updateOne({ _id: mongoose.Types.ObjectId(userId), 'apartments._id': mongoose.Types.ObjectId(apartmentId) }, { $set: { 'apartments.$.isFavorite': isFavorite } });
         return { isApartmentMarkedFavorite: !!response.nModified };
     } catch (error) {
