@@ -16,6 +16,7 @@ userController.register = async (req, res) => {
         if (error.code === API_STATUS_CODES.DUPLICATE_ENTRY) {
             return res.json({ status: API_STATUS_CODES.ERROR_CODE, message: RESPONSE_MESSAGES.DUPLICATE_ENTRY });
         }
+        console.log(error);
         return codeCrashResponse(res, error);
     }
 };

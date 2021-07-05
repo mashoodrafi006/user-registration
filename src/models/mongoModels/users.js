@@ -7,5 +7,4 @@ const users = mongoose.Schema({
     password: { type: String },
     apartments: { type: Array, default: null },
 });
-
 export default mongoose.model('users', users);

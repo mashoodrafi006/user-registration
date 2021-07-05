@@ -14,25 +14,27 @@ export default class UserValidator {
      */
     static async registerValidator(req, res, next) {
         try {
-            const { userName, password, email } = req.body;
+            const { userName, password, email } = req;
+            console.log(req.body);
 
-            /*
-                Validates that userName, password, email are of type string
-                Validates that email type is correct.
-            */
-            if (typeof userName === 'string' && typeof password === 'string' && typeof email === 'string') {
-                const isValidEmail = validator.isEmail(email);
-                if (isValidEmail) {
-                    const encryptedPassword = await bcrypt.hash(password, 10);
-                    req.body.password = encryptedPassword;
-                    next();
-                } else {
-                    res.json(INVALID_REQUEST);
-                }
-            } else {
-                res.json(INVALID_REQUEST);
-            }
+            // /*
+            //     Validates that userName, password, email are of type string
+            //     Validates that email type is correct.
+            // */
+            // if (typeof userName === 'string' && typeof password === 'string' && typeof email === 'string') {
+            //     const isValidEmail = validator.isEmail(email);
+            //     if (isValidEmail) {
+            //         const encryptedPassword = await bcrypt.hash(password, 10);
+            //         req.body.password = encryptedPassword;
+            //         next();
+            //     } else {
+            //         res.json(INVALID_REQUEST);
+            //     }
+            // } else {
+            //     res.json(INVALID_REQUEST);
+            // }
         } catch (error) {
+            console.log(error);
             res.json(CONTROLLER_ERROR);
         }
     }
