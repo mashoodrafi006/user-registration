@@ -15,8 +15,6 @@ export default class UserValidator {
     static async registerValidator(req, res, next) {
         try {
             const { userName, password, email } = req.body;
-            console.log(req.body);
-
             /*
                 Validates that userName, password, email are of type string
                 Validates that email type is correct.
