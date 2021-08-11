@@ -1,0 +1,40 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: homelikeservice
+spec:
+  selector:
+    app: homelikeapp
+  ports:
+    - protocol: "TCP"
+      # Port accessible inside cluster
+      port: 5090
+      # Port to forward to inside the pod
+      targetPort: 5090
+      # Port accessible outside cluster
+      nodePort: 30011
+  type: LoadBalancer
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelikedeployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: homelikeapp
+  template:
+    metadata:
+      labels:
+        app: homelikeapp
+    spec:
+      containers:
+        - name: homelikeapp
+          image: mashoodrafi/homelike:v2.0.0
+          ports:
+            - containerPort: 8080
