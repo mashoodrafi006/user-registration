@@ -2,6 +2,7 @@ import config from '../config/config';
 import { ApolloServer } from 'apollo-server-express';
 import { typeDefs } from '../graphql/typeDefs';
 import { resolvers } from '../graphql/resolvers';
+import logger  from '../utils/logger';
 
 const app = require('./expressApp');
 

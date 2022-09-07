@@ -2,13 +2,36 @@ const testController = {};
 
 testController.test = () => {
     try {
+        //object find, findIndex
+        let key = "a";
+        let value = 4;
+        const objects = [
+            { "a": 1, "b": 2, "c": 3 },
+            { "a": 4, "b": 5, "c": 6 }
+        ];
+
+
+        for (let index = 0; index < objects.length; index++) {
+            const object = objects[index];
+            
+            const list = Object.entries(object);
+
+            list.forEach(item => {
+
+            });
+
+        }
+
+
+
+        return 1;
         const a1 = [6, 5, 4, 3, 2, 1];
         const a2 = ['mood', 'mashood', 'aam', 'zinger', 'icecream'];
         const a3 = [1, 2, 3];
 
         const mapped = a1.map((element) => element * 2);
         const filtered = a1.filter((element) => element % 2 == 0);
-        const sorted = a1.sort((a, b) => (a > b ? 1 : -1));
+        // const sorted = a1.sort((a, b) => (a > b ? 1 : -1));
         const sortedString = a2.sort((a, b) => (a > b ? 1 : -1));
         const removedDuplicated = [...new Set([...a1, ...a3])];
         const everyIsEven = a1.some((element) => element % 2 == 0);
@@ -178,25 +201,25 @@ testController.test = () => {
     //     // console.log(key, array1[key]);
     // }
 };
-let racer1 = function() {
+let racer1 = function () {
     setTimeout(() => console.log('timeout'), 0);
     setImmediate(() => console.log('immediate'));
     process.nextTick(() => console.log('nextTick'));
 };
 
-let racer2 = function() {
+let racer2 = function () {
     process.nextTick(() => console.log('nextTick'));
     setTimeout(() => console.log('timeout'), 0);
     setImmediate(() => console.log('immediate'));
 };
 
-let racer3 = function() {
+let racer3 = function () {
     setImmediate(() => console.log('immediate'));
     process.nextTick(() => console.log('nextTick'));
     setTimeout(() => console.log('timeout'), 0);
 };
 function job(state) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         if (state) {
             resolve('success');
         } else {
