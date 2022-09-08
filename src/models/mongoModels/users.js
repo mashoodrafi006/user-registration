@@ -5,6 +5,9 @@ const users = mongoose.Schema({
     userName: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     password: { type: String },
-    apartments: { type: Array, default: null },
+    cards: { type: Array, default: null },
+    registrationRequest: { type: String },
+    status: { type: Boolean },
+    createdAt: { type: String }
 });
 export default mongoose.model('users', users);

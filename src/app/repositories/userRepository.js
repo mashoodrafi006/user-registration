@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import users from '../../models/mongoModels/users';
+import moment from "moment";
 
 const userRepository = {};
 
@@ -10,7 +11,15 @@ const userRepository = {};
 userRepository.create = async (credentials) => {
     try {
         const { userName, password, email } = credentials;
-        const response = await users.create({ userName, password, email });
+        const response = await users.create({
+            userName,
+            password,
+            email,
+            status: true,
+            registrationRequest: JSON.stringify({ userName, password, email }),
+            createdAt: moment().format("YYYY-DD-MM HH:MM:SS")
+        });
+
         return response;
     } catch (error) {
         throw error;
