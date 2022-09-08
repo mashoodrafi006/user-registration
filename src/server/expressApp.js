@@ -1,4 +1,5 @@
 import Connection from './connection';
+import ErrorMessage from "../constants/errorMessage";
 
 const express = require('express');
 const cors = require('cors');
@@ -11,6 +12,8 @@ app.set('view engine', 'pug');
 app.set('trust proxy', 1); // trust first proxy
 
 Connection.buildConnections();
+ErrorMessage.setErrorMessages();
+
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({

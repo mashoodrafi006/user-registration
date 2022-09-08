@@ -19,4 +19,6 @@ export const APP_ENVIRONMENTS = {
     PRODUCTION: 'production',
 };
 
+export const passwordLength = 8;
+
 export const JWT_TOKEN = 'eyJhbGciOiJ$IUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwYzIzNTYyYjlkNTZkNjY1Yjk0NDkzYyIsInVzZXJOYW1lIjoibWFzaG9vZCBSYWZpIiwiaWF0IjoxNjIzMzQxNzU2fQ.vfJCCeMRdEhzkJEwgJybJ95zFm0eYuiYvUDpi2q3Of8';

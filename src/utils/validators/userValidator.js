@@ -2,7 +2,10 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
+import { passwordLength } from "../../constants/constants";
 import { JWT_TOKEN } from '../../constants/constants';
+import logger from '../logger';
+import errorMessage from "../../constants/errorMessage";
 
 import { CONTROLLER_ERROR, INVALID_REQUEST, AUTHORIZATION_FAILED } from '../../constants/errors';
 
@@ -14,25 +17,24 @@ export default class UserValidator {
      */
     static async registerValidator(req, res, next) {
         try {
+            let errorListForRequest = [];
+            const mapOfErrorMessages = errorMessage.getErrorMessages();
             const { userName, password, email } = req.body;
-            /*
-                Validates that userName, password, email are of type string
-                Validates that email type is correct.
-            */
-            if (typeof userName === 'string' && typeof password === 'string' && typeof email === 'string') {
-                const isValidEmail = validator.isEmail(email);
-                if (isValidEmail) {
-                    const encryptedPassword = await bcrypt.hash(password, 10);
-                    req.body.password = encryptedPassword;
-                    next();
-                } else {
-                    res.json(INVALID_REQUEST);
-                }
-            } else {
-                res.json(INVALID_REQUEST);
-            }
+
+            /** Validate user details. */
+            errorListForRequest = UserValidator.validateUserDetails(userName, password, email, errorListForRequest, mapOfErrorMessages);
+            if (errorListForRequest.length) return res.json(INVALID_REQUEST(errorListForRequest));
+
+            /** Validates for strong password. */
+            errorListForRequest = UserValidator.validateStrongPassword(password, errorListForRequest, mapOfErrorMessages);
+            if (errorListForRequest.length) return res.json(INVALID_REQUEST(errorListForRequest));
+
+            const encryptedPassword = await bcrypt.hash(password, 10);
+            req.body.password = encryptedPassword;
+            next();
+
         } catch (error) {
-            console.log(error);
+
             res.json(CONTROLLER_ERROR);
         }
     }
@@ -176,6 +178,60 @@ export default class UserValidator {
             /* Validate that id provided by JWT resolution is valid mongo id. */
             return typeof JWTdata === 'object' && mongoose.Types.ObjectId.isValid(JWTdata.id) ? { isValidTokan: true, data: JWTdata } : { isValidTokan: false, data: JWTdata };
         } catch (error) {
+            throw error;
+        }
+    }
+
+    /**
+     * @param password (Password entered by the user)
+     * @param errorListForRequest (List of validation errors)
+     * @param mapOfErrorMessages (List of existing validation error messages in the system.)
+     * @description Check if the password passes all validation rules.
+     */
+    static validateStrongPassword = (password, errorListForRequest, mapOfErrorMessages) => {
+        try {
+            const lowerCaseMatch = /[a-z]/g;
+            const upperCaseMatch = /[A-Z]/g;
+            const validateNumbers = /[0-9]/g;
+
+            if (!password.match(lowerCaseMatch)) errorListForRequest.push(mapOfErrorMessages.NO_LOWERCASE_LETTER_IN_PASSWORD);
+            if (!password.match(upperCaseMatch)) errorListForRequest.push(mapOfErrorMessages.NO_UPPERCASE_LETTER_IN_PASSWORD);
+            if (!password.match(validateNumbers)) errorListForRequest.push(mapOfErrorMessages.NO_DIGIT_IN_PASSWORD);
+            if (password.length < passwordLength) errorListForRequest.push(mapOfErrorMessages.SHORT_PASSWORD_LENGTH);
+            if (!(typeof password === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_PASSWORD_FORMAT);
+
+            return errorListForRequest;
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: error.message,
+            });
+            throw error;
+        }
+    }
+
+    /**
+     * @param username
+     * @param password
+     * @param email
+     * @param errorListForRequest (List of validation errors)
+     * @param mapOfErrorMessages (List of existing validation error messages in the system.)
+     * @description Check if user details passes all validation rules.
+     */
+    static validateUserDetails = (userName, password, email, errorListForRequest, mapOfErrorMessages) => {
+        try {
+
+            if (!(typeof userName === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_USERNAME);
+            if (!(typeof password === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_PASSWORD_FORMAT);
+            if (!(typeof email === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_EMAIL);
+            if (!validator.isEmail(email)) errorListForRequest.push(mapOfErrorMessages.INVALID_EMAIL_FORMAT);
+
+            return errorListForRequest;
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: error.message,
+            });
             throw error;
         }
     }
