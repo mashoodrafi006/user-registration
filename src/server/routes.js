@@ -1,5 +1,5 @@
 const app = require('./expressApp');
-const homeLikeRoutes = require('../routes/api');
-app.use('/api/', homeLikeRoutes);
+const routes = require('../routes/api');
+app.use('/api/', routes);
 
 module.exports = app;

@@ -1,6 +1,7 @@
 import logger from '../utils/logger';
 import { codeCrashResponse } from '../utils/utils';
 import userService from '../app/services/userService';
+import stripeService from "../app/services/stripeService";
 import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
 
 const userController = {};
@@ -19,6 +20,22 @@ userController.register = async (req, res) => {
         return codeCrashResponse(res, error);
     }
 };
+
+userController.addPaymentDetails = async (req, res) => {
+    try {
+        console.log("In controller for payment details.");
+        const { userId, name, cardNumber, cardType, expiryDate } = req.body;
+
+        await stripeService.addPaymentCard({ userId, name, cardNumber, cardType, expiryDate });
+    } catch (error) {
+        console.log(error);
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
+        return codeCrashResponse(res, error);
+    }
+}
 
 userController.login = async (req, res) => {
     try {

@@ -12,7 +12,9 @@ export const INVALID_REQUEST = (errorMessage) => {
     }
 };
 
-export const AUTHORIZATION_FAILED = {
-    status: 401,
-    message: 'Authorization failed.',
+export const AUTHORIZATION_FAILED = (errorMessage) => {
+    return {
+        status: 401,
+        message: errorMessage
+    }
 };

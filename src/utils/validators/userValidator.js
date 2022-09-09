@@ -6,6 +6,8 @@ import { passwordLength } from "../../constants/constants";
 import { JWT_TOKEN } from '../../constants/constants';
 import logger from '../logger';
 import errorMessage from "../../constants/errorMessage";
+import moment from "moment";
+import { stripeAvaiableCardTypes, paymentCardNumberLength } from "../../constants/constants";
 
 import { CONTROLLER_ERROR, INVALID_REQUEST, AUTHORIZATION_FAILED } from '../../constants/errors';
 
@@ -17,6 +19,7 @@ export default class UserValidator {
      */
     static async registerValidator(req, res, next) {
         try {
+            //TODO: validate that userName, password, email are present
             let errorListForRequest = [];
             const mapOfErrorMessages = errorMessage.getErrorMessages();
             const { userName, password, email } = req.body;
@@ -34,8 +37,80 @@ export default class UserValidator {
             next();
 
         } catch (error) {
-
             res.json(CONTROLLER_ERROR);
+        }
+    }
+
+    /**
+    * @param req
+    * @param res
+    * @param next
+    */
+    static async addPaymentCardValidator(req, res, next) {
+        try {
+            let errorListForRequest = [];
+            const cardDetails = req.body;
+            const mapOfErrorMessages = errorMessage.getErrorMessages();
+
+            /* Check for authorization in headers */
+            if (!req.headers.authorization) {
+                return res.json(AUTHORIZATION_FAILED(mapOfErrorMessages.NO_BEARER_TOKEN));
+            }
+            const bearer = UserValidator.fetchAccessToken(req);
+            const JWTUser = UserValidator.fetchJWTUser(bearer);
+            if (!JWTUser.isValidTokan) {
+                return res.json(AUTHORIZATION_FAILED(mapOfErrorMessages.INVALID_BEARER_TOKEN));
+            }
+
+            errorListForRequest = UserValidator.validatePaymentDetails(cardDetails, errorListForRequest, mapOfErrorMessages);
+            if (errorListForRequest.length) return res.json(INVALID_REQUEST(errorListForRequest));
+            req.body.userId = JWTUser.data.id;
+
+            next();
+        } catch (error) {
+            console.log(error);
+            logger.log({
+                level: 'error',
+                message: error.message,
+            });
+            res.json(CONTROLLER_ERROR);
+        }
+    }
+
+    /**
+     * @param cardDetails
+     * @param errorListForRequest
+     * @param mapOfErrorMessages
+     * @Description Validates that payment details passes all validations 
+     */    static validatePaymentDetails(cardDetails, errorListForRequest, mapOfErrorMessages) {
+        try {
+            //add comment to each validation.
+            let { cardType, cardNumber, name, expiryDate } = cardDetails;
+
+            if (!cardDetails.hasOwnProperty("cardType") || typeof cardType !== "string") errorListForRequest.push(mapOfErrorMessages.CARD_TYPE_MISSING);
+            if (!cardDetails.hasOwnProperty("name") || typeof name !== "string") errorListForRequest.push(mapOfErrorMessages.NAME_OF_CARD_HOLDER_MISSING);
+            if (!cardDetails.hasOwnProperty("cardNumber")) errorListForRequest.push(mapOfErrorMessages.CARD_NUMBER_MISSING);
+            if (!cardDetails.hasOwnProperty("expiryDate")) errorListForRequest.push(mapOfErrorMessages.CARD_EXPIRY_DATE_MISSING);
+            if (!moment(expiryDate, 'YYYY-DD-MM', true).isValid()) errorListForRequest.push(mapOfErrorMessages.INVALID_EXPIRY_DATE_FORMAT);
+
+            if (errorListForRequest.length) return errorListForRequest;
+
+            cardType = cardDetails.cardType.trim();
+            cardNumber = cardDetails.cardNumber.toString();
+
+            cardType = stripeAvaiableCardTypes.includes(cardType.toUpperCase());
+            if (!cardType) errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_TYPE + stripeAvaiableCardTypes);
+            if (cardNumber.length != paymentCardNumberLength) errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_NUMBER_LENGTH);
+            if (typeof name !== "string") errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_HOLDER_NAME);
+            if (!moment(expiryDate).isAfter(moment())) errorListForRequest.push(mapOfErrorMessages.EXPIRED_CARD);
+
+            return errorListForRequest;
+        } catch (error) {
+            logger.log({
+                level: 'error',
+                message: error.message,
+            });
+            throw error;
         }
     }
 
