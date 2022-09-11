@@ -13,6 +13,7 @@ stripeRepository.addPaymentCardToStripe = async (userCardDetails) => {
 
         /* Imaginary axios call here to STRIPE with payment details to add the card using {userCardDetails}. */
         let randomDelay = Math.floor(Math.random() * (STRIPE_REQUEST_DELAY.maxTime - STRIPE_REQUEST_DELAY.minTime + 1)) + STRIPE_REQUEST_DELAY.minTime;
+
         await new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve(true);

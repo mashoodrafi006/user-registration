@@ -11,8 +11,12 @@ userController.register = async (req, res) => {
     try {
         const { userName, password, email } = req.body;
         const createdUser = await userService.create({ userName, password, email });
-        let response = userController.prepareResponseBack(createdUser);
 
+        let response = {
+            status: API_STATUS_CODES.SUCCESS,
+            message: [RESPONSE_MESSAGES.USER_CREATED],
+            body: createdUser
+        }
         return res.json(response);
     } catch (error) {
         if (error.code === API_STATUS_CODES.DUPLICATE_ENTRY) {

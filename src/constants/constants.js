@@ -11,7 +11,8 @@ export const RESPONSE_MESSAGES = {
     AUTHORIZATION_FAILED: 'Authorization failed',
     DUPLICATE_ENTRY: 'Try other username or email.',
     USER_DELETED: "User deleted successfully.",
-    REQUEST_SENT_TO_STRIPE: "Request was sent to Stripe."
+    REQUEST_SENT_TO_STRIPE: "Request was sent to Stripe.",
+    USER_CREATED: "User registered successfully."
 };
 
 export const APP_ENVIRONMENTS = {
