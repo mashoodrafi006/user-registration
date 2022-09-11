@@ -115,7 +115,7 @@ describe('Test cases for user registration.', () => {
         jest.setTimeout(15000);
 
         const registeredUser = await getSuccessfullyRegisteredUser();
-        const response = await addPaymentCard(registeredUser.body.token, "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
+        const response = await addPaymentCard(registeredUser.body.token, "AMEX", "Mashood Rafi", 2234567891234567, "2022-12-12");
         const listOfStripeResponses = UserFixture.stripeResponses();
 
         if (response.body.stripeId != null) {
@@ -127,6 +127,7 @@ describe('Test cases for user registration.', () => {
         }
         accessToken = registeredUser.body.token;
         testUserId = registeredUser.body.id;
+        console.log(testUserId);
     });
 
     test("Adding expired card details.", async () => {
@@ -173,7 +174,7 @@ describe('Test cases for user registration.', () => {
         expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
-        deleteTestUser(testUserId);
-        console.log(testUserId);
+        await deleteTestUser(testUserId);
+        console.log('Deleted now: ', testUserId);
     })
 });

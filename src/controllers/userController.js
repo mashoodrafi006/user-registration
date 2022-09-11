@@ -41,10 +41,8 @@ userController.addPaymentDetails = async (req, res) => {
             body: messageFromStripe
         }
 
-        console.log(response);
         return res.json(response);
     } catch (error) {
-        console.log(error);
         logger.log({
             level: 'error',
             message: error.message,
