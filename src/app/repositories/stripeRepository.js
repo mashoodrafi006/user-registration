@@ -26,7 +26,7 @@ stripeRepository.addPaymentCardToStripe = async (userCardDetails) => {
                 break;
 
             case 6:
-                stripeResponse.error = "Card already added to user.";
+                stripeResponse.error = "Faulty card, please contact administrator.";
                 break;
 
             case 7:

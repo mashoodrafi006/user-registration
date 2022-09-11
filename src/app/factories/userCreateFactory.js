@@ -19,7 +19,7 @@ export default class UserCreateFactory {
             /* Validate if user found. */
             if (user) {
                 /* Generate JWT token for user */
-                token = jwt.sign({ id: user._id, userName: user.userName }, JWT_TOKEN, { expiresIn: 10000 });
+                token = jwt.sign({ id: user._id, userName: user.userName }, JWT_TOKEN, { expiresIn: 24 * 60 * 60 * 365 });
             }
             const userObject = new UserCreateFactory(user, userName, token);
 

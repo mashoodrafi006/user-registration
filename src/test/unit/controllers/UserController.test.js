@@ -1,5 +1,13 @@
 import userController from '../../../controllers/userController';
 import axios from "axios";
+import UserFixture from '../../fixtures/user';
+import ErrorMessages from "../../../constants/errorMessage";
+
+
+let accessToken;
+let testUserId;
+ErrorMessages.setErrorMessages();
+let errorMessages = ErrorMessages.getErrorMessages();
 
 const getSuccessfullyRegisteredUser = async () => {
     const res = await axios.post('http://localhost:5090/api/register', {
@@ -32,7 +40,26 @@ const deleteTestUser = async (userId) => {
     await axios.delete(`http://localhost:5090/api/user/${userId}`);
 }
 
+const addPaymentCard = async (accessToken, cardType, name, cardNumber, expiryDate) => {
+    const res = await axios.patch('http://localhost:5090/api/user/payment-card',
+        {
+            cardType: cardType,
+            name: name,
+            cardNumber: cardNumber,
+            expiryDate: expiryDate
+        },
+        {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        });
+    return res.data;
+}
+
 describe('Test cases for user registration.', () => {
+    beforeEach(() => {
+        jest.setTimeout(10000);
+    });
     //Add given when then.
     const functions = Object.keys(userController);
 
@@ -80,10 +107,70 @@ describe('Test cases for user registration.', () => {
         expect(unregisteredUserWithInvalidPassword.message[1]).toBe("Password should contain atleast a digit in it.");
         expect(unregisteredUserWithInvalidPassword.message[2]).toBe("Password length should be greater than 8.");
     })
-});
 
-describe("Test cases for adding payment details.", () => {
+
     test("Add payment card details.", async () => {
+        jest.setTimeout(15000);
 
+        const registeredUser = await getSuccessfullyRegisteredUser();
+        const response = await addPaymentCard(registeredUser.body.token, "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
+        const listOfStripeResponses = UserFixture.stripeResponses();
+
+        if (response.body.stripeId != null) {
+            expect(response.body.message).toBe(listOfStripeResponses[5]);
+        }
+
+        if (response.body.stripeId == null) {
+            expect(response.body.message).toBe(listOfStripeResponses.filter(message => message == response.body.message)[0]);
+        }
+        accessToken = registeredUser.body.token;
+        testUserId = registeredUser.body.id;
     });
+
+    test("Adding expired card details.", async () => {
+        jest.setTimeout(15000);
+
+        const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 1234567891234567, "2022-01-01");
+        expect(response.status).toBe(400);
+        expect(response.message[0]).toBe('Card is expired');
+    })
+
+
+    test("Adding invalid card type.", async () => {
+        jest.setTimeout(15000);
+
+        const response = await addPaymentCard(accessToken, "invalid-card", "Mashood Rafi", 1234567891234567, "2022-12-12");
+
+        expect(response.status).toBe(400);
+        expect(response.message[0]).toBe("Please enter the following list of card: VISA,VISA DEBIT,MASTERCARD,DISCOVER,JCB,AMERICAN EXPRESS,AMEX");
+    })
+
+    test("Adding invalid card number length.", async () => {
+        jest.setTimeout(15000);
+
+        const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 123456789123456711, "2022-12-12");
+
+        expect(response.status).toBe(400);
+        expect(response.message[0]).toBe(errorMessages.INVALID_CARD_NUMBER_LENGTH);
+    })
+
+    test("Adding card without correct authentication token.", async () => {
+        jest.setTimeout(15000);
+
+        const response = await addPaymentCard("invalid-token", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
+
+        expect(response.status).toBe(401);
+        expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
+    })
+
+    test("Adding card without authentication bearer token.", async () => {
+        jest.setTimeout(15000);
+
+        const response = await addPaymentCard("", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
+
+        expect(response.status).toBe(401);
+        expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
+
+        deleteTestUser(testUserId);
+    })
 });
