@@ -61,18 +61,21 @@ describe('Test cases for user registration.', () => {
     beforeEach(() => {
         jest.setTimeout(10000);
     });
-    //Add given when then.
-    const functions = Object.keys(userController);
 
+    const functions = Object.keys(userController);
     test('It should contain all functions.', async () => {
         expect(functions).toContain('register');
         expect(functions).toContain('login');
         expect(functions).toContain('addPaymentDetails');
     });
 
+    /* Given */
     test("Register user successfully.", async () => {
+
+        /* When*/
         const registeredUser = await getSuccessfullyRegisteredUser();
 
+        /* Then */
         expect(registeredUser.status).toBe(200);
         expect(registeredUser.message[0]).toBe(RESPONSE_MESSAGES.SUCCESS);
 
@@ -84,26 +87,39 @@ describe('Test cases for user registration.', () => {
         });
     })
 
+    /* Given */
     test("Register user successfully.", async () => {
+
+        /* When*/
         const registeredUser = await getSuccessfullyRegisteredUser();
         const retryRegistration = await getSuccessfullyRegisteredUser();
 
+        /* Then */
         expect(retryRegistration.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(retryRegistration.message[0]).toBe(RESPONSE_MESSAGES.DUPLICATE_ENTRY);
 
         deleteTestUser(registeredUser.body.id);
     })
 
+    /* Given */
     test("Do not register user with invalid email", async () => {
+
+        /* When*/
         const unregisteredUserWithInvalidEmail = await getUserResponseWithInvalidEmail();
 
+        /* Then */
         expect(unregisteredUserWithInvalidEmail.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(unregisteredUserWithInvalidEmail.message[0]).toBe(errorMessages.INVALID_EMAIL_FORMAT);
     })
 
+    /* Given */
     test("Do not register user with invalid password", async () => {
+
+        /* When*/
         const unregisteredUserWithInvalidPassword = await getUserResponseWithInvalidPassword();
 
+
+        /* Then */
         expect(unregisteredUserWithInvalidPassword.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(unregisteredUserWithInvalidPassword.message[0]).toBe(errorMessages.NO_UPPERCASE_LETTER_IN_PASSWORD);
         expect(unregisteredUserWithInvalidPassword.message[1]).toBe(errorMessages.NO_DIGIT_IN_PASSWORD);
@@ -111,13 +127,16 @@ describe('Test cases for user registration.', () => {
     })
 
 
+    /* Given */
     test("Add payment card details.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const registeredUser = await getSuccessfullyRegisteredUser();
         const response = await addPaymentCard(registeredUser.body.token, "AMEX", "Mashood Rafi", 2234567891234567, "2022-12-12");
         const listOfStripeResponses = UserFixture.stripeResponses();
 
+        /* Then */
         if (response.body.stripeId != null) {
             expect(response.body.message).toBe(listOfStripeResponses[5]);
         }
@@ -130,47 +149,62 @@ describe('Test cases for user registration.', () => {
         console.log(testUserId);
     });
 
+    /* Given */
     test("Adding expired card details.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 1234567891234567, "2022-01-01");
+
+        /* Then */
         expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe('Card is expired');
     })
 
-
+    /* Given */
     test("Adding invalid card type.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const response = await addPaymentCard(accessToken, "invalid-card", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
+        /* Then */
         expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe("Please enter the following list of card: VISA,VISA DEBIT,MASTERCARD,DISCOVER,JCB,AMERICAN EXPRESS,AMEX");
     })
 
+    /* Given */
     test("Adding invalid card number length.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 123456789123456711, "2022-12-12");
 
+        /* Then */
         expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe(errorMessages.INVALID_CARD_NUMBER_LENGTH);
     })
 
+    /* Given */
     test("Adding card without correct authentication token.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const response = await addPaymentCard("invalid-token", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
+        /* Then */
         expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
     })
 
+    /* Given */
     test("Adding card without authentication bearer token.", async () => {
         jest.setTimeout(15000);
 
+        /* When*/
         const response = await addPaymentCard("", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
+        /* Then */
         expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
