@@ -18,7 +18,6 @@ export default class UserValidator {
      */
     static async registerValidator(req, res, next) {
         try {
-            //TODO: validate that userName, password, email are present
             let errorListForRequest = [];
             const mapOfErrorMessages = errorMessage.getErrorMessages();
             const { userName, password, email } = req.body;
@@ -86,10 +85,19 @@ export default class UserValidator {
             //add comment to each validation.
             let { cardType, cardNumber, name, expiryDate } = cardDetails;
 
+            /* cardType should be present in the request & of type string. */
             if (!cardDetails.hasOwnProperty("cardType") || typeof cardType !== "string") errorListForRequest.push(mapOfErrorMessages.CARD_TYPE_MISSING);
+
+            /* name of the card holder should be present in the request & of type string.  */
             if (!cardDetails.hasOwnProperty("name") || typeof name !== "string") errorListForRequest.push(mapOfErrorMessages.NAME_OF_CARD_HOLDER_MISSING);
+
+            /* cardNumber should be present. */
             if (!cardDetails.hasOwnProperty("cardNumber")) errorListForRequest.push(mapOfErrorMessages.CARD_NUMBER_MISSING);
+
+            /* expiry date should be present. */
             if (!cardDetails.hasOwnProperty("expiryDate")) errorListForRequest.push(mapOfErrorMessages.CARD_EXPIRY_DATE_MISSING);
+
+            /* Valid expiry date format should be provided. */
             if (!moment(expiryDate, 'YYYY-DD-MM', true).isValid()) errorListForRequest.push(mapOfErrorMessages.INVALID_EXPIRY_DATE_FORMAT);
 
             if (errorListForRequest.length) return errorListForRequest;
@@ -98,9 +106,16 @@ export default class UserValidator {
             cardNumber = cardDetails.cardNumber.toString();
 
             cardType = stripeAvaiableCardTypes.includes(cardType.toUpperCase());
+
+            /* Only allow given list of cards to be accepted. */
             if (!cardType) errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_TYPE + stripeAvaiableCardTypes);
+
+            /* Card number should have 16 digits. */
             if (cardNumber.length != paymentCardNumberLength) errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_NUMBER_LENGTH);
+
             if (typeof name !== "string") errorListForRequest.push(mapOfErrorMessages.INVALID_CARD_HOLDER_NAME);
+
+            /* expiry date should be in future. */
             if (!moment(expiryDate).isAfter(moment())) errorListForRequest.push(mapOfErrorMessages.EXPIRED_CARD);
 
             return errorListForRequest;
@@ -126,96 +141,6 @@ export default class UserValidator {
             } else {
                 res.json(INVALID_REQUEST);
             }
-        } catch (error) {
-            res.json(CONTROLLER_ERROR);
-        }
-    }
-
-    /**
-     * @param req
-     * @param res
-     * @param next
-     */
-    static async saveUserApartmentValidator(req, res, next) {
-        try {
-            const { apartmentId } = req.body;
-
-            /* Check for authorization in headers */
-            if (!req.headers.authorization) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-            const bearer = UserValidator.fetchAccessToken(req);
-            const JWTUser = UserValidator.fetchJWTUser(bearer);
-            if (!JWTUser.isValidTokan) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-
-            /*
-                Validate object id of entities user/apartment
-            */
-
-            if (mongoose.Types.ObjectId.isValid(apartmentId)) {
-                req.body.userId = JWTUser.data.id;
-                next();
-            } else {
-                res.json(INVALID_REQUEST);
-            }
-        } catch (error) {
-            res.json(CONTROLLER_ERROR);
-        }
-    }
-
-    /**
-     * @param req
-     * @param res
-     * @param next
-     */
-    static async markApartmentFavoriteValidator(req, res, next) {
-        try {
-            const { apartmentId, isFavorite } = req.body;
-
-            /* Check for authorization in headers */
-            if (!req.headers.authorization) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-            const bearer = UserValidator.fetchAccessToken(req);
-            const JWTUser = UserValidator.fetchJWTUser(bearer);
-            if (!JWTUser.isValidTokan) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-
-            /*
-                Validate object id of entities user/apartment
-            */
-
-            if (mongoose.Types.ObjectId.isValid(apartmentId) && typeof isFavorite === 'boolean') {
-                req.body.userId = JWTUser.data.id;
-                next();
-            } else {
-                res.json(INVALID_REQUEST);
-            }
-        } catch (error) {
-            res.json(CONTROLLER_ERROR);
-        }
-    }
-
-    /**
-     * @param req
-     * @description Save user favorite apartment.
-     */
-    static markUserFavoriteApartmentValidator(req, res, next) {
-        try {
-            /* Check for authorization in headers */
-            if (!req.headers.authorization) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-            const bearer = UserValidator.fetchAccessToken(req);
-            const JWTUser = UserValidator.fetchJWTUser(bearer);
-            if (!JWTUser.isValidTokan) {
-                return res.json(AUTHORIZATION_FAILED);
-            }
-            req.body.userId = JWTUser.data.id;
-            next();
         } catch (error) {
             res.json(CONTROLLER_ERROR);
         }
@@ -268,10 +193,19 @@ export default class UserValidator {
             const upperCaseMatch = /[A-Z]/g;
             const validateNumbers = /[0-9]/g;
 
+            /* password to have lowercase letter. */
             if (!password.match(lowerCaseMatch)) errorListForRequest.push(mapOfErrorMessages.NO_LOWERCASE_LETTER_IN_PASSWORD);
+
+            /* password to have uppercase letter. */
             if (!password.match(upperCaseMatch)) errorListForRequest.push(mapOfErrorMessages.NO_UPPERCASE_LETTER_IN_PASSWORD);
+
+            /* password to have digits. */
             if (!password.match(validateNumbers)) errorListForRequest.push(mapOfErrorMessages.NO_DIGIT_IN_PASSWORD);
+
+            /* password length should be greater than 8. */
             if (password.length < passwordLength) errorListForRequest.push(mapOfErrorMessages.SHORT_PASSWORD_LENGTH);
+
+            /* password should be valid string. */
             if (!(typeof password === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_PASSWORD_FORMAT);
 
             return errorListForRequest;
@@ -295,9 +229,16 @@ export default class UserValidator {
     static validateUserDetails = (userName, password, email, errorListForRequest, mapOfErrorMessages) => {
         try {
 
+            /* userName should be of type string. */
             if (!(typeof userName === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_USERNAME);
+
+            /* password should be of type string. */
             if (!(typeof password === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_PASSWORD_FORMAT);
+
+            /* email should be of type string.  */
             if (!(typeof email === 'string')) errorListForRequest.push(mapOfErrorMessages.INVALID_EMAIL);
+
+            /* email should be valid. */
             if (!validator.isEmail(email)) errorListForRequest.push(mapOfErrorMessages.INVALID_EMAIL_FORMAT);
 
             return errorListForRequest;

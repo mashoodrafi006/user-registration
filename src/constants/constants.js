@@ -6,6 +6,7 @@ export const API_STATUS_CODES = {
     INTENAL_SERVER_ERROR: 500,
     DUPLICATE_ENTRY: 11000,
 };
+
 export const RESPONSE_MESSAGES = {
     SUCCESS: 'Sucess',
     AUTHORIZATION_FAILED: 'Authorization failed',

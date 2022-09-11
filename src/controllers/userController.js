@@ -7,6 +7,7 @@ import PaymentCardAddedFactory from '../app/factories/PaymentCardAddedFactory';
 
 const userController = {};
 
+/* Register user. */
 userController.register = async (req, res) => {
     try {
         const { userName, password, email } = req.body;
@@ -26,6 +27,7 @@ userController.register = async (req, res) => {
     }
 };
 
+/* Add user payment card. */
 userController.addPaymentDetails = async (req, res) => {
     try {
         const { userId, name, cardNumber, cardType, expiryDate } = req.body;
@@ -55,6 +57,7 @@ userController.addPaymentDetails = async (req, res) => {
     }
 }
 
+/* Login user. */
 userController.login = async (req, res) => {
     try {
         const { userName, password } = req.body;
@@ -74,6 +77,7 @@ userController.login = async (req, res) => {
     }
 };
 
+/* Delete user. */
 userController.deleteUser = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -95,69 +99,5 @@ userController.deleteUser = async (req, res) => {
         return codeCrashResponse(res, error);
     }
 }
-
-userController.saveUserApartment = async (req, res) => {
-    const { userId, apartmentId } = req.body;
-    try {
-        const isApartmentSaved = await userService.saveUserApartment({ userId, apartmentId });
-        let response = userController.prepareResponseBack(isApartmentSaved);
-
-        return res.json(response);
-    } catch (error) {
-        logger.log({
-            level: 'error',
-            message: error.message,
-        });
-        return codeCrashResponse(res, error);
-    }
-};
-
-userController.markApartmentFavorite = async (req, res) => {
-    const { userId, apartmentId, isFavorite } = req.body;
-    try {
-        const isApartmentSaved = await userService.markUserApartmentFavorite({ userId, apartmentId, isFavorite });
-        let response = userController.prepareResponseBack(isApartmentSaved);
-
-        return res.json(response);
-    } catch (error) {
-        logger.log({
-            level: 'error',
-            message: error.message,
-        });
-        return codeCrashResponse(res, error);
-    }
-};
-
-userController.findUserFavoriteApartments = async (req, res) => {
-    const { userId } = req.body;
-    try {
-        let userFavoriteApartments = await userService.findUserFavoriteApartments(userId);
-        let response = userController.prepareResponseBack(userFavoriteApartments);
-
-        return res.json(response);
-    } catch (error) {
-        logger.log({
-            level: 'error',
-            message: error.message,
-        });
-        return codeCrashResponse(res, error);
-    }
-};
-
-userController.prepareResponseBack = (entities) => {
-    try {
-        let response = {};
-        response.status = API_STATUS_CODES.SUCCESS;
-        response.message = [RESPONSE_MESSAGES.SUCCESS];
-        response.body = entities;
-        return response;
-    } catch (error) {
-        logger.log({
-            level: 'error',
-            message: error.message,
-        });
-        throw error;
-    }
-};
 
 export default userController;

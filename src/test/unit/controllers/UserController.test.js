@@ -77,7 +77,7 @@ describe('Test cases for user registration.', () => {
 
         /* Then */
         expect(registeredUser.status).toBe(200);
-        expect(registeredUser.message[0]).toBe(RESPONSE_MESSAGES.SUCCESS);
+        expect(registeredUser.message[0]).toBe(RESPONSE_MESSAGES.USER_CREATED);
 
         deleteTestUser(registeredUser.body.id);
         await new Promise((resolve, reject) => {
@@ -146,7 +146,6 @@ describe('Test cases for user registration.', () => {
         }
         accessToken = registeredUser.body.token;
         testUserId = registeredUser.body.id;
-        console.log(testUserId);
     });
 
     /* Given */
@@ -209,6 +208,5 @@ describe('Test cases for user registration.', () => {
         expect(response.message[0]).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
         await deleteTestUser(testUserId);
-        console.log('Deleted now: ', testUserId);
     })
 });

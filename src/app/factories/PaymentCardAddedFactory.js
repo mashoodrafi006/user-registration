@@ -1,26 +1,26 @@
-import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../../constants/constants';
 
 export default class PaymentCardAddedFactory {
 
-
     constructor(isCardSaved, stripeResponse) {
-        this.message = isCardSaved ? stripeResponse.stripe_id : stripeResponse.error;
+
+        /* Incase the requests fails from Stripe*/
         if (stripeResponse.hasOwnProperty("error")) {
             this.message = stripeResponse.error;
             this.stripeId = null;
         }
 
+        /* Card added successfully on Stripe*/
         if (stripeResponse.hasOwnProperty("stripe_id") && isCardSaved) {
             this.message = "Card saved sucessfully.";
             this.stripeId = stripeResponse.stripe_id;
         }
 
+        /* Success response from Stripe but card could not be added because it was already added. */
         if (stripeResponse.hasOwnProperty("stripe_id") && !isCardSaved) {
             this.message = "Card could not be saved.";
             this.stripeId = null;
         }
     }
-
 
     /**
      * @param isCardSaved
