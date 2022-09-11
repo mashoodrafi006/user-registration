@@ -1,14 +1,13 @@
-import validator from 'validator';
-import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
-import { passwordLength } from "../../constants/constants";
-import { JWT_TOKEN } from '../../constants/constants';
-import logger from '../logger';
-import errorMessage from "../../constants/errorMessage";
 import moment from "moment";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import logger from '../logger';
+import mongoose from 'mongoose';
+import validator from 'validator';
+import { JWT_TOKEN } from '../../constants/constants';
+import errorMessage from "../../constants/errorMessage";
+import { passwordLength } from "../../constants/constants";
 import { stripeAvaiableCardTypes, paymentCardNumberLength } from "../../constants/constants";
-
 import { CONTROLLER_ERROR, INVALID_REQUEST, AUTHORIZATION_FAILED } from '../../constants/errors';
 
 export default class UserValidator {

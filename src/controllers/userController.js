@@ -16,7 +16,7 @@ userController.register = async (req, res) => {
         return res.json(response);
     } catch (error) {
         if (error.code === API_STATUS_CODES.DUPLICATE_ENTRY) {
-            return res.json({ status: API_STATUS_CODES.ERROR_CODE, message: RESPONSE_MESSAGES.DUPLICATE_ENTRY });
+            return res.json({ status: API_STATUS_CODES.ERROR_CODE, message: [RESPONSE_MESSAGES.DUPLICATE_ENTRY] });
         }
         return codeCrashResponse(res, error);
     }
@@ -118,7 +118,7 @@ userController.prepareResponseBack = (entities) => {
     try {
         let response = {};
         response.status = API_STATUS_CODES.SUCCESS;
-        response.message = RESPONSE_MESSAGES.SUCCESS;
+        response.message = [RESPONSE_MESSAGES.SUCCESS];
         response.body = entities;
         return response;
     } catch (error) {
