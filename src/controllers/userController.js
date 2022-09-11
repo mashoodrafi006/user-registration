@@ -3,6 +3,7 @@ import { codeCrashResponse } from '../utils/utils';
 import userService from '../app/services/userService';
 import stripeService from "../app/services/stripeService";
 import { API_STATUS_CODES, RESPONSE_MESSAGES } from '../constants/constants';
+import PaymentCardAddedFactory from '../app/factories/PaymentCardAddedFactory';
 
 const userController = {};
 
@@ -23,12 +24,21 @@ userController.register = async (req, res) => {
 
 userController.addPaymentDetails = async (req, res) => {
     try {
-        console.log("In controller for payment details.");
         const { userId, name, cardNumber, cardType, expiryDate } = req.body;
+        let isCardAdded = false;
+        const user = await userService.findUserById(userId);
+        const stripeAddCardResponse = await stripeService.addPaymentCard({ userId, name, email: user.email, cardNumber, cardType, expiryDate });
 
-        await stripeService.addPaymentCard({ userId, name, cardNumber, cardType, expiryDate });
+        if (stripeAddCardResponse.hasOwnProperty("stripe_id")) {
+            /* Card added to Stripe successfuly. */
+            isCardAdded = await userService.saveUserPaymentCard({ userId, name, cardNumber, cardType, expiryDate });
+        }
+
+        const messageFromStripe = await PaymentCardAddedFactory.prepareResponse(isCardAdded, stripeAddCardResponse);
+        let response = userController.prepareResponseBack(messageFromStripe);
+
+        return res.json(response);
     } catch (error) {
-        console.log(error);
         logger.log({
             level: 'error',
             message: error.message,

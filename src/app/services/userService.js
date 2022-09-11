@@ -16,6 +16,14 @@ userService.create = async (credentials) => {
     }
 };
 
+userService.findUserById = async (userId) => {
+    try {
+        return await userRepository.findById(userId);
+    } catch (error) {
+        throw error;
+    }
+}
+
 userService.loginUser = async (credentials) => {
     try {
         const { userName, password } = credentials;
@@ -26,6 +34,14 @@ userService.loginUser = async (credentials) => {
         throw error;
     }
 };
+
+userService.saveUserPaymentCard = async (userCardDetails) => {
+    try {
+        return await userRepository.saveUserPaymentCardDetails(userCardDetails);
+    } catch (error) {
+        throw error;
+    }
+}
 
 userService.saveUserApartment = async (userApartmentDetails) => {
     try {

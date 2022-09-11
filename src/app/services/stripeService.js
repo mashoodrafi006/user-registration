@@ -1,12 +1,10 @@
-import stripeRepository from "../factories/stripeRepository";
+import stripeRepository from "../repositories/stripeRepository";
 
 const stripeService = {};
 
 stripeService.addPaymentCard = async (userCardDetails) => {
     try {
-
-        stripeRepository.addPaymentCardToStripe(userCardDetails);
-
+        return await stripeRepository.addPaymentCardToStripe(userCardDetails);
     } catch (error) {
         throw error;
     }

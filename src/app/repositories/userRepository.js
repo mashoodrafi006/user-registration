@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import users from '../../models/mongoModels/users';
 import moment from "moment";
+import { response } from 'express';
 
 const userRepository = {};
 
@@ -50,6 +51,7 @@ userRepository.findUserFromUserName = async (userName) => {
 userRepository.findById = async (userId) => {
     try {
         /* Lean method is used for faster queries and keeps the operation less memory intensive */
+        /* Only active user should be fetched*/
         let user = await users.findById(userId).lean();
 
         return user;
@@ -57,6 +59,29 @@ userRepository.findById = async (userId) => {
         throw error;
     }
 };
+
+/**
+ * @param userCardDetails
+ * @description Save card details embedded in user document.
+ */
+userRepository.saveUserPaymentCardDetails = async (userCardDetails) => {
+    try {
+        let isCardSaved = false;
+        const paymentCardDetails = {
+            "cardType": userCardDetails.cardType,
+            "name": userCardDetails.name,
+            "cardNumber": userCardDetails.cardNumber,
+            "expiryDate": userCardDetails.expiryDate
+        }
+
+        let response = await users.updateOne({ _id: userCardDetails.userId }, { $addToSet: { cards: paymentCardDetails } });
+        isCardSaved = !!response.nModified;
+
+        return isCardSaved;
+    } catch (error) {
+        throw error;
+    }
+}
 
 /**
  * @param apartmentDetail

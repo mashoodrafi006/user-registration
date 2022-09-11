@@ -21,6 +21,10 @@ export const APP_ENVIRONMENTS = {
 
 export const passwordLength = 8;
 export const paymentCardNumberLength = 16;
+export const STRIPE_REQUEST_DELAY = {
+    minTime: 5,
+    maxTime: 10
+}
 
 export const stripeAvaiableCardTypes = ["VISA", "VISA DEBIT", "MASTERCARD", "DISCOVER", "JCB", "AMERICAN EXPRESS", "AMEX"];
 
