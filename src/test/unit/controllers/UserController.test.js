@@ -2,7 +2,7 @@ import userController from '../../../controllers/userController';
 import axios from "axios";
 import UserFixture from '../../fixtures/user';
 import ErrorMessages from "../../../constants/errorMessage";
-import { API_STATUS_CODES } from "../../../constants/constants";
+import { API_STATUS_CODES, RESPONSE_MESSAGES } from "../../../constants/constants";
 
 
 let accessToken;
@@ -74,7 +74,7 @@ describe('Test cases for user registration.', () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
 
         expect(registeredUser.status).toBe(200);
-        expect(registeredUser.message[0]).toBe("Sucess");
+        expect(registeredUser.message[0]).toBe(RESPONSE_MESSAGES.SUCCESS);
 
         deleteTestUser(registeredUser.body.id);
         await new Promise((resolve, reject) => {
@@ -89,7 +89,7 @@ describe('Test cases for user registration.', () => {
         const retryRegistration = await getSuccessfullyRegisteredUser();
 
         expect(retryRegistration.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
-        expect(retryRegistration.message[0]).toBe("Try other username or email.");
+        expect(retryRegistration.message[0]).toBe(RESPONSE_MESSAGES.DUPLICATE_ENTRY);
 
         deleteTestUser(registeredUser.body.id);
     })
@@ -98,16 +98,16 @@ describe('Test cases for user registration.', () => {
         const unregisteredUserWithInvalidEmail = await getUserResponseWithInvalidEmail();
 
         expect(unregisteredUserWithInvalidEmail.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
-        expect(unregisteredUserWithInvalidEmail.message[0]).toBe("Invalid email address.");
+        expect(unregisteredUserWithInvalidEmail.message[0]).toBe(errorMessages.INVALID_EMAIL_FORMAT);
     })
 
     test("Do not register user with invalid password", async () => {
         const unregisteredUserWithInvalidPassword = await getUserResponseWithInvalidPassword();
 
         expect(unregisteredUserWithInvalidPassword.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
-        expect(unregisteredUserWithInvalidPassword.message[0]).toBe("Password should contain uppercase letter.");
-        expect(unregisteredUserWithInvalidPassword.message[1]).toBe("Password should contain atleast a digit in it.");
-        expect(unregisteredUserWithInvalidPassword.message[2]).toBe("Password length should be greater than 8.");
+        expect(unregisteredUserWithInvalidPassword.message[0]).toBe(errorMessages.NO_UPPERCASE_LETTER_IN_PASSWORD);
+        expect(unregisteredUserWithInvalidPassword.message[1]).toBe(errorMessages.NO_DIGIT_IN_PASSWORD);
+        expect(unregisteredUserWithInvalidPassword.message[2]).toBe(errorMessages.SHORT_PASSWORD_LENGTH);
     })
 
 
@@ -174,5 +174,6 @@ describe('Test cases for user registration.', () => {
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
         deleteTestUser(testUserId);
+        console.log(testUserId);
     })
 });
