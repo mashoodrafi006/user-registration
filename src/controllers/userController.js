@@ -14,7 +14,7 @@ userController.register = async (req, res) => {
         const createdUser = await userService.create({ userName, password, email });
 
         let response = {
-            status: API_STATUS_CODES.SUCCESS,
+            status: API_STATUS_CODES.CREATED,
             message: [RESPONSE_MESSAGES.USER_CREATED],
             body: createdUser
         }

@@ -1,4 +1,4 @@
-# homeLike
+# rapidApi
 
 ## Get Started
 
@@ -10,12 +10,18 @@
 
 ### Project Details
 
-It's an restaurant panel API's project.
+It's a project that registers user & add payment details using REST APIs. 
+Login & register module has also been implimented using graphQl.
 
 ## Code Style
 
 -   Install Prettier plugin for auto code refactor
 -   Install ESLint plugin
+
+## Code
+-   branch-naming-check (to push only valid named branches on git.)
+-   JWT (for authentication)
+- 
 
 ## Testing
 

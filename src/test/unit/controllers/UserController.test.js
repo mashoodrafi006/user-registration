@@ -76,7 +76,7 @@ describe('Test cases for user registration.', () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
 
         /* Then */
-        expect(registeredUser.status).toBe(200);
+        expect(registeredUser.status).toBe(API_STATUS_CODES.CREATED);
         expect(registeredUser.message[0]).toBe(RESPONSE_MESSAGES.USER_CREATED);
 
         deleteTestUser(registeredUser.body.id);
@@ -88,7 +88,7 @@ describe('Test cases for user registration.', () => {
     })
 
     /* Given */
-    test("Register user successfully.", async () => {
+    test("Do not register duplicate user.", async () => {
 
         /* When*/
         const registeredUser = await getSuccessfullyRegisteredUser();
@@ -149,7 +149,7 @@ describe('Test cases for user registration.', () => {
     });
 
     /* Given */
-    test("Adding expired card details.", async () => {
+    test("Do not add card with expired card details.", async () => {
         jest.setTimeout(15000);
 
         /* When*/
@@ -161,7 +161,7 @@ describe('Test cases for user registration.', () => {
     })
 
     /* Given */
-    test("Adding invalid card type.", async () => {
+    test("Do not add card with invalid card type.", async () => {
         jest.setTimeout(15000);
 
         /* When*/
@@ -173,7 +173,7 @@ describe('Test cases for user registration.', () => {
     })
 
     /* Given */
-    test("Adding invalid card number length.", async () => {
+    test("Do not add card with invalid card number length.", async () => {
         jest.setTimeout(15000);
 
         /* When*/
@@ -185,7 +185,7 @@ describe('Test cases for user registration.', () => {
     })
 
     /* Given */
-    test("Adding card without correct authentication token.", async () => {
+    test("Do not add card without correct authentication token.", async () => {
         jest.setTimeout(15000);
 
         /* When*/
@@ -197,7 +197,7 @@ describe('Test cases for user registration.', () => {
     })
 
     /* Given */
-    test("Adding card without authentication bearer token.", async () => {
+    test("Do not add card without authentication bearer token.", async () => {
         jest.setTimeout(15000);
 
         /* When*/
