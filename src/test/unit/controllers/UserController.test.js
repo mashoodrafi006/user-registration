@@ -33,8 +33,7 @@ const deleteTestUser = async (userId) => {
 }
 
 describe('Test cases for user registration.', () => {
-    //create test user
-    //delete test user at the end.
+    //Add given when then.
     const functions = Object.keys(userController);
 
     test('It should contain all functions.', async () => {
@@ -45,17 +44,25 @@ describe('Test cases for user registration.', () => {
 
     test("Register user successfully.", async () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
-
         expect(registeredUser.status).toBe(200);
         expect(registeredUser.message[0]).toBe("Sucess");
+
+        deleteTestUser(registeredUser.body.id);
+        await new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(true);
+            }, 2000)
+        });
     })
 
     test("Register user successfully.", async () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
+        const retryRegistration = await getSuccessfullyRegisteredUser();
 
-        expect(registeredUser.status).toBe(400);
-        expect(registeredUser.message[0]).toBe("Try other username or email.");
-        // delete user from database here.
+        expect(retryRegistration.status).toBe(400);
+        expect(retryRegistration.message[0]).toBe("Try other username or email.");
+
+        deleteTestUser(registeredUser.body.id);
     })
 
     test("Do not register user with invalid email", async () => {
