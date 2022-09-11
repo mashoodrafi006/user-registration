@@ -43,6 +43,14 @@ userService.saveUserPaymentCard = async (userCardDetails) => {
     }
 }
 
+userService.deleteUserById = async (userId) => {
+    try {
+        await userRepository.deleteUserById(userId);
+    } catch (error) {
+        throw error;
+    }
+}
+
 userService.saveUserApartment = async (userApartmentDetails) => {
     try {
         this.isSaved = false;

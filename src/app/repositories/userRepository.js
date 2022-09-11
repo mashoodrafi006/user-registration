@@ -83,6 +83,14 @@ userRepository.saveUserPaymentCardDetails = async (userCardDetails) => {
     }
 }
 
+userRepository.deleteUserById = async (userId) => {
+    try {
+        await users.deleteOne({ _id: userId });
+    } catch (error) {
+        throw error;
+    }
+}
+
 /**
  * @param apartmentDetail
  * @description Save user his new apartment.

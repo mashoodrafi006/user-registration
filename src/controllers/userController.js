@@ -66,6 +66,28 @@ userController.login = async (req, res) => {
     }
 };
 
+userController.deleteUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        userService.deleteUserById(userId);
+
+        const response = {
+            status: API_STATUS_CODES.SUCCESS,
+            message: RESPONSE_MESSAGES.USER_DELETED,
+            body: []
+        }
+
+        return res.json(response);
+    } catch (error) {
+        console.log(error);
+        logger.log({
+            level: 'error',
+            message: error.message,
+        });
+        return codeCrashResponse(res, error);
+    }
+}
+
 userController.saveUserApartment = async (req, res) => {
     const { userId, apartmentId } = req.body;
     try {

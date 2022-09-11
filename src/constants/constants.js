@@ -10,6 +10,7 @@ export const RESPONSE_MESSAGES = {
     SUCCESS: 'Sucess',
     AUTHORIZATION_FAILED: 'Authorization failed',
     DUPLICATE_ENTRY: 'Try other username or email.',
+    USER_DELETED: "User deleted successfully."
 };
 
 export const APP_ENVIRONMENTS = {
