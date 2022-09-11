@@ -2,6 +2,7 @@ import userController from '../../../controllers/userController';
 import axios from "axios";
 import UserFixture from '../../fixtures/user';
 import ErrorMessages from "../../../constants/errorMessage";
+import { API_STATUS_CODES } from "../../../constants/constants";
 
 
 let accessToken;
@@ -71,6 +72,7 @@ describe('Test cases for user registration.', () => {
 
     test("Register user successfully.", async () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
+
         expect(registeredUser.status).toBe(200);
         expect(registeredUser.message[0]).toBe("Sucess");
 
@@ -86,7 +88,7 @@ describe('Test cases for user registration.', () => {
         const registeredUser = await getSuccessfullyRegisteredUser();
         const retryRegistration = await getSuccessfullyRegisteredUser();
 
-        expect(retryRegistration.status).toBe(400);
+        expect(retryRegistration.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(retryRegistration.message[0]).toBe("Try other username or email.");
 
         deleteTestUser(registeredUser.body.id);
@@ -95,14 +97,14 @@ describe('Test cases for user registration.', () => {
     test("Do not register user with invalid email", async () => {
         const unregisteredUserWithInvalidEmail = await getUserResponseWithInvalidEmail();
 
-        expect(unregisteredUserWithInvalidEmail.status).toBe(400);
+        expect(unregisteredUserWithInvalidEmail.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(unregisteredUserWithInvalidEmail.message[0]).toBe("Invalid email address.");
     })
 
     test("Do not register user with invalid password", async () => {
         const unregisteredUserWithInvalidPassword = await getUserResponseWithInvalidPassword();
 
-        expect(unregisteredUserWithInvalidPassword.status).toBe(400);
+        expect(unregisteredUserWithInvalidPassword.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(unregisteredUserWithInvalidPassword.message[0]).toBe("Password should contain uppercase letter.");
         expect(unregisteredUserWithInvalidPassword.message[1]).toBe("Password should contain atleast a digit in it.");
         expect(unregisteredUserWithInvalidPassword.message[2]).toBe("Password length should be greater than 8.");
@@ -131,7 +133,7 @@ describe('Test cases for user registration.', () => {
         jest.setTimeout(15000);
 
         const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 1234567891234567, "2022-01-01");
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe('Card is expired');
     })
 
@@ -141,7 +143,7 @@ describe('Test cases for user registration.', () => {
 
         const response = await addPaymentCard(accessToken, "invalid-card", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe("Please enter the following list of card: VISA,VISA DEBIT,MASTERCARD,DISCOVER,JCB,AMERICAN EXPRESS,AMEX");
     })
 
@@ -150,7 +152,7 @@ describe('Test cases for user registration.', () => {
 
         const response = await addPaymentCard(accessToken, "AMEX", "Mashood Rafi", 123456789123456711, "2022-12-12");
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(API_STATUS_CODES.INVALID_REQUEST);
         expect(response.message[0]).toBe(errorMessages.INVALID_CARD_NUMBER_LENGTH);
     })
 
@@ -159,7 +161,7 @@ describe('Test cases for user registration.', () => {
 
         const response = await addPaymentCard("invalid-token", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
     })
 
@@ -168,7 +170,7 @@ describe('Test cases for user registration.', () => {
 
         const response = await addPaymentCard("", "AMEX", "Mashood Rafi", 1234567891234567, "2022-12-12");
 
-        expect(response.status).toBe(401);
+        expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
         expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
         deleteTestUser(testUserId);
