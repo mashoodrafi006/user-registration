@@ -7,10 +7,9 @@ import apartmentValidator from '../utils/validators/apartmentValidator';
 const router = express.Router({});
 
 router.post('/register', userValidator.registerValidator, userController.register);
-router.post('/payment-card', userValidator.addPaymentCardValidator, userController.addPaymentDetails);
-
-
+router.patch('/payment-card', userValidator.addPaymentCardValidator, userController.addPaymentDetails);
 router.post('/login', userValidator.loginValidator, userController.login);
+
 router.patch('/user/apartment', userValidator.saveUserApartmentValidator, userController.saveUserApartment);
 router.patch('/user/apartment/mark-favorite', userValidator.markApartmentFavoriteValidator, userController.markApartmentFavorite);
 router.get('/user/apartments/favorite', userValidator.markUserFavoriteApartmentValidator, userController.findUserFavoriteApartments);
