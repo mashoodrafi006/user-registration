@@ -4,5 +4,4 @@ export default class Connections {
     static buildConnections() {
         mongoConnection();
     }
-
 }

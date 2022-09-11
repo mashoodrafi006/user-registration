@@ -1,8 +1,6 @@
 import userRepository from '../repositories/userRepository';
 import userLoginFactory from '../factories/userLoginFactory';
-import apartmentService from './apartmentService';
 import userCreateFactory from '../factories/userCreateFactory';
-import userFavoriteApartmentFactory from '../factories/userFavoriteApartments';
 
 const userService = {};
 
@@ -51,57 +49,4 @@ userService.deleteUserById = async (userId) => {
     }
 }
 
-userService.saveUserApartment = async (userApartmentDetails) => {
-    try {
-        this.isSaved = false;
-        let promises = await userService.findUserAndApartment(userApartmentDetails);
-
-        await Promise.all(promises).then(async (resolvedPromises) => {
-            this.isSaved = await userRepository.saveUserApartment(resolvedPromises);
-        });
-        return { isApartmentSaved: this.isSaved };
-    } catch (error) {
-        throw error;
-    }
-};
-
-userService.findUserAndApartment = async (userApartmentDetails) => {
-    try {
-        const promises = [];
-        /* Both requests are sent asynchronously to improve performance */
-        const { userId, apartmentId } = userApartmentDetails;
-        const userPromise = new Promise((resolve) => {
-            const user = userRepository.findById(userId);
-            resolve(user);
-        });
-        const apartmentPromise = new Promise((resolve) => {
-            const apartment = apartmentService.findById(apartmentId);
-            resolve(apartment);
-        });
-        promises.push(userPromise);
-        promises.push(apartmentPromise);
-        return promises;
-    } catch (error) {
-        throw error;
-    }
-};
-
-userService.markUserApartmentFavorite = async (userApartmentDetails) => {
-    try {
-        let markedFavorite = await userRepository.markUserApartmentFavorite(userApartmentDetails);
-        return markedFavorite;
-    } catch (error) {
-        throw error;
-    }
-};
-
-userService.findUserFavoriteApartments = async (userId) => {
-    try {
-        const userFavoriteApartments = await userRepository.findUserFavoriteApartments(userId);
-        const response = userFavoriteApartmentFactory.prepareResponse(userFavoriteApartments);
-        return response;
-    } catch (error) {
-        throw error;
-    }
-};
 export default userService;

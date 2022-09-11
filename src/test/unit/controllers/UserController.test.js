@@ -194,7 +194,7 @@ describe('Test cases for user registration.', () => {
 
         /* Then */
         expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
-        expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
+        expect(response.message[0]).toBe(errorMessages.INVALID_BEARER_TOKEN);
     })
 
     /* Given */
@@ -206,7 +206,7 @@ describe('Test cases for user registration.', () => {
 
         /* Then */
         expect(response.status).toBe(API_STATUS_CODES.AUTHORIZATION_FAILED);
-        expect(response.message).toBe(errorMessages.INVALID_BEARER_TOKEN);
+        expect(response.message[0]).toBe(errorMessages.INVALID_BEARER_TOKEN);
 
         await deleteTestUser(testUserId);
         console.log('Deleted now: ', testUserId);
