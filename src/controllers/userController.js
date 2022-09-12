@@ -41,8 +41,10 @@ userController.addPaymentDetails = async (req, res) => {
         }
 
         const messageFromStripe = await PaymentCardAddedFactory.prepareResponse(isCardAdded, stripeAddCardResponse);
+        const { status } = messageFromStripe;
+        delete messageFromStripe.status;
         let response = {
-            status: API_STATUS_CODES.SUCCESS,
+            status: status,
             message: [RESPONSE_MESSAGES.REQUEST_SENT_TO_STRIPE],
             body: messageFromStripe
         }

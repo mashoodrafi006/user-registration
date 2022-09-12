@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import users from '../../models/mongoModels/users';
 import moment from "moment";
 
@@ -15,7 +14,7 @@ userRepository.create = async (credentials) => {
             userName,
             password,
             email,
-            status: true,
+            status: "ACTIVE",
             registrationRequest: JSON.stringify({ userName, password, email }),
             createdAt: moment().format("YYYY-DD-MM HH:MM:SS")
         });

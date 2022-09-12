@@ -7,7 +7,7 @@ const users = mongoose.Schema({
     password: { type: String },
     cards: { type: Array, default: null },
     registrationRequest: { type: String },
-    status: { type: Boolean },
+    status: { type: String },
     createdAt: { type: String }
 });
 export default mongoose.model('users', users);

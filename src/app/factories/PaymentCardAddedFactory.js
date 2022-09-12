@@ -2,6 +2,7 @@
 export default class PaymentCardAddedFactory {
 
     constructor(isCardSaved, stripeResponse) {
+        this.status = stripeResponse.status;
 
         /* Incase the requests fails from Stripe*/
         if (stripeResponse.hasOwnProperty("error")) {

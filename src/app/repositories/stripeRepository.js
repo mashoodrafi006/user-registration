@@ -1,4 +1,4 @@
-import { STRIPE_REQUEST_DELAY } from "../../constants/constants";
+import { API_STATUS_CODES, STRIPE_REQUEST_DELAY } from "../../constants/constants";
 const stripeRepository = {};
 
 /**
@@ -24,26 +24,32 @@ stripeRepository.addPaymentCardToStripe = async (userCardDetails) => {
         switch (randomDelay) {
             case 5:
                 stripeResponse.stripe_id = userCardDetails.userId + randomDelay;
+                stripeResponse.status = API_STATUS_CODES.CREATED;
                 break;
 
             case 6:
                 stripeResponse.error = "Faulty card, please contact administrator.";
+                stripeResponse.status = API_STATUS_CODES.INVALID_REQUEST;
                 break;
 
             case 7:
                 stripeResponse.error = "Invalid customer ID.";
+                stripeResponse.status = API_STATUS_CODES.NOT_FOUND;
                 break;
 
             case 8:
                 stripeResponse.error = "Stripe service is down.";
+                stripeResponse.status = API_STATUS_CODES.TIME_OUT;
                 break;
 
             case 9:
                 stripeResponse.error = "Request timed out, please try again.";
+                stripeResponse.status = API_STATUS_CODES.TIME_OUT;
                 break;
 
             case 10:
                 stripeResponse.error = "This card has been blocked for security reasons by the card holder.";
+                stripeResponse.status = API_STATUS_CODES.INVALID_REQUEST;
                 break;
         }
 
