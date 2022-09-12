@@ -29,7 +29,14 @@ Login & register module has also been implimented using graphQl.
 
 
 ## Execution of code
+- Via npm
+Refer to .env to comment the docker configuration for mongodb
 `npm run dev`
+
+- Via Docker
+Start docker on machine
+Refer to .env to comment the npm configuration for mongodb
+`docker-compose up`
 
 Once the server boots, enjoy triggering the APIs.
 
